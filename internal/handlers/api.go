@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"math/rand"
 	"net/http"
 	"path"
 	"strings"
@@ -68,6 +71,39 @@ func NewListingsHandler(s api.ListingService) *ListingsHandler {
 }
 
 func (h *ListingsHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
+	if req.URL.Path == "/" {
+		switch req.Method {
+		case "GET":
+			data, err := h.listingService.Listings()
+			if err != nil {
+				http.Error(
+					res,
+					fmt.Sprintf("An error occured when getting listings, %v", err),
+					http.StatusInternalServerError,
+				)
+			}
+			res.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(res).Encode(data)
+			return
+		case "POST":
+			d := json.NewDecoder(req.Body)
+			d.DisallowUnknownFields()
+			var l *api.Listing = new(api.Listing)
+			err := d.Decode(l)
+			if err != nil {
+				http.Error(res, err.Error(), http.StatusBadRequest)
+				return
+			}
+			l.Id = rand.Intn(10000)
+			err = h.listingService.Create(l)
+			if err != nil {
+				http.Error(res, err.Error(), http.StatusInternalServerError)
+			}
+			res.WriteHeader(http.StatusCreated)
+			return
+		}
+	}
+	// TODO:
 	http.Error(res, "Not implemented", http.StatusNotImplemented)
 }
 
@@ -79,6 +115,7 @@ func NewUsersHandler(s api.UserService) *UsersHandler {
 	return &UsersHandler{userService: s}
 }
 
+// TODO:
 func (h *UsersHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
 	http.Error(res, "Not implemented", http.StatusNotImplemented)
 }
