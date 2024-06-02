@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"path"
 	"strings"
+
+	"github.com/mbocsi/goapi-demo/api"
 )
 
 // Helper function for seperating url head/tails
@@ -18,6 +20,10 @@ func ShiftPath(p string) (head, tail string) {
 
 type App struct {
 	ApiHandler *ApiHandler
+}
+
+func NewApp(h *ApiHandler) *App {
+	return &App{ApiHandler: h}
 }
 
 func (h *App) ServeHTTP(res http.ResponseWriter, req *http.Request) {
@@ -35,6 +41,10 @@ type ApiHandler struct {
 	UsersHandler    *UsersHandler
 }
 
+func NewApiHandler(l *ListingsHandler, u *UsersHandler) *ApiHandler {
+	return &ApiHandler{ListingsHandler: l, UsersHandler: u}
+}
+
 func (h *ApiHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var head string
 	head, req.URL.Path = ShiftPath(req.URL.Path)
@@ -49,13 +59,25 @@ func (h *ApiHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	return
 }
 
-type ListingsHandler struct{}
+type ListingsHandler struct {
+	listingService api.ListingService
+}
+
+func NewListingsHandler(s api.ListingService) *ListingsHandler {
+	return &ListingsHandler{listingService: s}
+}
 
 func (h *ListingsHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
 	http.Error(res, "Not implemented", http.StatusNotImplemented)
 }
 
-type UsersHandler struct{}
+type UsersHandler struct {
+	userService api.UserService
+}
+
+func NewUsersHandler(s api.UserService) *UsersHandler {
+	return &UsersHandler{userService: s}
+}
 
 func (h *UsersHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
 	http.Error(res, "Not implemented", http.StatusNotImplemented)
