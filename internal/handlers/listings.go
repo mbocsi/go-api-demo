@@ -74,7 +74,12 @@ func (h *ListingsHandler) handlePost(res http.ResponseWriter, req *http.Request)
 	l.Id = rand.Intn(10000)
 	err = h.listingService.Create(l)
 	if err != nil {
-		api.InternalErrorHandler(res)
+		if err == api.InvalidArgumentError {
+			http.Error(res, err.Error(), http.StatusUnprocessableEntity)
+		} else {
+			api.InternalErrorHandler(res)
+		}
+		return
 	}
 	res.WriteHeader(http.StatusCreated)
 }
@@ -108,7 +113,11 @@ func (h *ListingsHandler) handlePut(id int, res http.ResponseWriter, req *http.R
 		return
 	}
 	if err != api.NotFoundError {
-		api.InternalErrorHandler(res)
+		if err == api.InvalidArgumentError {
+			http.Error(res, err.Error(), http.StatusUnprocessableEntity)
+		} else {
+			api.InternalErrorHandler(res)
+		}
 		return
 	}
 	err = h.listingService.Create(l)

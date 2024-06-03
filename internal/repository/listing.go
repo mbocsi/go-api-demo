@@ -37,7 +37,6 @@ func (l *listingRepository) Update(id int, listing *api.Listing) error {
 		return err
 	}
 	*item = *listing
-	item.Id = id
 	return nil
 }
 

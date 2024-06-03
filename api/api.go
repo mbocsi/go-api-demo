@@ -48,6 +48,8 @@ type UserRepository interface {
 
 var NotFoundError = errors.New("Item not found")
 
+var InvalidArgumentError = errors.New("Invalid arguments")
+
 func InternalErrorHandler(w http.ResponseWriter) {
 	http.Error(w, "An unexpected error occured.", http.StatusInternalServerError)
 }
