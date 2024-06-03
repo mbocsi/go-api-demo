@@ -20,7 +20,15 @@ func main() {
 	apiHandler := handlers.NewApiHandler(listingsHandler, usersHandler)
 	app := handlers.NewApp(apiHandler)
 
-	fmt.Println("Starting GO API service on port on localhost:8080...")
+	fmt.Println("Starting GO API service on http://localhost:8080...")
+	fmt.Println(`   _____  ____             _____ _____   _____  ______ __  __  ____  
+  / ____|/ __ \      /\   |  __ \_   _| |  __ \|  ____|  \/  |/ __ \ 
+ | |  __| |  | |    /  \  | |__) || |   | |  | | |__  | \  / | |  | |
+ | | |_ | |  | |   / /\ \ |  ___/ | |   | |  | |  __| | |\/| | |  | |
+ | |__| | |__| |  / ____ \| |    _| |_  | |__| | |____| |  | | |__| |
+  \_____|\____/  /_/    \_\_|   |_____| |_____/|______|_|  |_|\____/ 
+                                                                     
+                                                                     `)
 	err := http.ListenAndServe(":8080", app)
 	if err != nil {
 		fmt.Println(err.Error())
