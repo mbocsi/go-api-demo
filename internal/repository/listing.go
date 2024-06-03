@@ -16,6 +16,9 @@ func NewListingRepository(db []api.Listing) api.ListingRepository {
 
 func (l *listingRepository) Find(id int) (*api.Listing, error) {
 	idx := slices.IndexFunc(l.DB, func(l api.Listing) bool { return l.Id == id })
+	if idx == -1 {
+		return nil, api.NotFoundError
+	}
 	return &l.DB[idx], nil
 }
 
@@ -28,8 +31,21 @@ func (l *listingRepository) Create(listing *api.Listing) error {
 	return nil
 }
 
+func (l *listingRepository) Update(id int, listing *api.Listing) error {
+	item, err := l.Find(id)
+	if err != nil {
+		return err
+	}
+	*item = *listing
+	item.Id = id
+	return nil
+}
+
 func (l *listingRepository) Delete(id int) error {
-	idx := slices.IndexFunc(l.DB, func(l api.Listing) bool { return l.Id == id })
+	idx := slices.IndexFunc(l.DB, func(listing api.Listing) bool { return listing.Id == id })
+	if idx == -1 {
+		return api.NotFoundError
+	}
 	l.DB = append(l.DB[:idx], l.DB[idx+1:]...)
 	return nil
 }

@@ -22,6 +22,10 @@ func (l *listingService) Create(listing *api.Listing) error {
 	return l.listingRespository.Create(listing)
 }
 
+func (l *listingService) Update(id int, listing *api.Listing) error {
+	return l.listingRespository.Update(id, listing)
+}
+
 func (l *listingService) Delete(id int) error {
 	return l.listingRespository.Delete(id)
 }

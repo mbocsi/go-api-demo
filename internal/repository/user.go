@@ -16,6 +16,9 @@ func NewUserRepository(db []api.User) api.UserRepository {
 
 func (u *userRepository) Find(id string) (*api.User, error) {
 	idx := slices.IndexFunc(u.DB, func(u api.User) bool { return u.Id == id })
+	if idx == -1 {
+		return nil, api.NotFoundError
+	}
 	return &u.DB[idx], nil
 }
 
@@ -26,6 +29,9 @@ func (u *userRepository) Create(user *api.User) error {
 
 func (u *userRepository) Delete(id string) error {
 	idx := slices.IndexFunc(u.DB, func(u api.User) bool { return u.Id == id })
+	if idx == -1 {
+		return api.NotFoundError
+	}
 	u.DB = append(u.DB[:idx], u.DB[idx+1:]...)
 	return nil
 }
