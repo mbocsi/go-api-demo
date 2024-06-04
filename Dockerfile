@@ -1,5 +1,7 @@
 FROM golang:1.22.3-alpine
 
+ENV GO_ENV=PROD
+
 WORKDIR /app
 
 COPY go.mod ./
