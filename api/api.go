@@ -12,6 +12,16 @@ type Listing struct {
 	Price  float64 `json:"askingPrice"`
 }
 
+type ListingResponse struct {
+	Success bool     `json:"success"`
+	Listing *Listing `json:"listing"`
+}
+
+type ListingsResponse struct {
+	Success  bool      `json:"success"`
+	Listings []Listing `json:"listings"`
+}
+
 type ListingService interface {
 	Listing(id int) (*Listing, error)
 	Listings() ([]Listing, error)

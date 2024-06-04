@@ -59,8 +59,9 @@ func (h *ListingsHandler) handleGet(res http.ResponseWriter) {
 	if err != nil {
 		api.InternalErrorHandler(res)
 	}
+	resData := api.ListingsResponse{Success: true, Listings: data}
 	res.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(res).Encode(data)
+	json.NewEncoder(res).Encode(resData)
 }
 
 func (h *ListingsHandler) handlePost(res http.ResponseWriter, req *http.Request) {
@@ -95,8 +96,9 @@ func (h *ListingsHandler) handleGetId(id int, res http.ResponseWriter) {
 		}
 		return
 	}
+	resData := api.ListingResponse{Success: true, Listing: data}
 	res.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(res).Encode(data)
+	json.NewEncoder(res).Encode(resData)
 }
 
 func (h *ListingsHandler) handlePut(id int, res http.ResponseWriter, req *http.Request) {
