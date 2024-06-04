@@ -5,8 +5,8 @@ import (
 )
 
 type ApiHandler struct {
-	ListingsHandler *ListingsHandler
-	UsersHandler    *UsersHandler
+	ListingsHandler http.Handler
+	UsersHandler    http.Handler
 }
 
 func NewApiHandler(l *ListingsHandler, u *UsersHandler) *ApiHandler {
@@ -18,9 +18,9 @@ func (h *ApiHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	head, req.URL.Path = ShiftPath(req.URL.Path)
 	switch head {
 	case "listings":
-		h.ListingsHandler.serveHTTP(res, req)
+		h.ListingsHandler.ServeHTTP(res, req)
 	case "users":
-		h.UsersHandler.serveHTTP(res, req)
+		h.UsersHandler.ServeHTTP(res, req)
 	default:
 		http.Error(res, "Not found", http.StatusNotFound)
 	}

@@ -18,7 +18,13 @@ func NewListingsHandler(s api.ListingService) *ListingsHandler {
 	return &ListingsHandler{listingService: s}
 }
 
-func (h *ListingsHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
+func (h *ListingsHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	head, tail := ShiftPath(req.URL.Path)
+	if tail != "/" { // This is the last route handler
+		http.Error(res, "Not found", http.StatusNotFound)
+		return
+	}
+	// id not specified, return all listings
 	if req.URL.Path == "/" {
 		switch req.Method {
 		case "GET":
@@ -30,12 +36,7 @@ func (h *ListingsHandler) serveHTTP(res http.ResponseWriter, req *http.Request) 
 		}
 		return
 	}
-	// TODO:
-	head, tail := ShiftPath(req.URL.Path)
-	if tail != "/" {
-		http.Error(res, "Not found", http.StatusNotFound)
-		return
-	}
+	// id was given in route, return single listing
 	id, err := strconv.Atoi(head)
 	if err != nil {
 		http.Error(res, fmt.Sprintf("Invalid user id %q", head), http.StatusBadRequest)

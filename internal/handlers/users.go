@@ -15,6 +15,6 @@ func NewUsersHandler(s api.UserService) *UsersHandler {
 }
 
 // TODO:
-func (h *UsersHandler) serveHTTP(res http.ResponseWriter, req *http.Request) {
+func (h *UsersHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	http.Error(res, "Not implemented", http.StatusNotImplemented)
 }

@@ -17,7 +17,7 @@ func ShiftPath(p string) (head, tail string) {
 }
 
 type App struct {
-	ApiHandler *ApiHandler
+	ApiHandler http.Handler
 }
 
 func NewApp(h *ApiHandler) *App {
