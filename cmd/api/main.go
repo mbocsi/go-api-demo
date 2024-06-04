@@ -20,7 +20,8 @@ func main() {
 	listingsHandler := handlers.NewListingsHandler(listingService)
 	apiHandler := handlers.NewApiHandler(listingsHandler, usersHandler)
 	app := handlers.NewApp(apiHandler)
-	corsWrapper := middleware.NewResponseHeader(app, "Access-Control-Allow-Origin", "*")
+	corsMiddleware := middleware.NewResponseHeader(app, "Access-Control-Allow-Origin", "*")
+	logsMiddleware := middleware.NewRequestLogger(corsMiddleware)
 
 	fmt.Println("Starting GO API service on http://localhost:8080...")
 	fmt.Println(`   _____  ____             _____ _____   _____  ______ __  __  ____  
@@ -31,7 +32,7 @@ func main() {
   \_____|\____/  /_/    \_\_|   |_____| |_____/|______|_|  |_|\____/ 
                                                                      
                                                                      `)
-	err := http.ListenAndServe(":8080", corsWrapper)
+	err := http.ListenAndServe(":8080", logsMiddleware)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
