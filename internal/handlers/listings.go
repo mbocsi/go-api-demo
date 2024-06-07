@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/mbocsi/goapi-demo/api"
@@ -31,6 +32,8 @@ func (h *ListingsHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 			h.handleGet(res)
 		case "POST":
 			h.handlePost(res, req)
+		case "OPTIONS":
+			h.handleOptions(res)
 		default:
 			http.Error(res, "Invalid request method", http.StatusMethodNotAllowed)
 		}
@@ -49,6 +52,8 @@ func (h *ListingsHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 		h.handlePut(id, res, req)
 	case "DELETE":
 		h.handleDelete(id, res)
+	case "OPTIONS":
+		h.handleOptionsId(res)
 	default:
 		http.Error(res, "Invalid request method", http.StatusMethodNotAllowed)
 	}
@@ -84,6 +89,15 @@ func (h *ListingsHandler) handlePost(res http.ResponseWriter, req *http.Request)
 		return
 	}
 	res.WriteHeader(http.StatusCreated)
+}
+
+func (h *ListingsHandler) handleOptions(res http.ResponseWriter) {
+	res.Header().Set("Allow", "GET, POST")
+	if os.Getenv("GO_ENV") != "PROD" {
+		res.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+		res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
+	}
+	res.WriteHeader(http.StatusNoContent)
 }
 
 func (h *ListingsHandler) handleGetId(id int, res http.ResponseWriter) {
@@ -141,4 +155,14 @@ func (h *ListingsHandler) handleDelete(id int, res http.ResponseWriter) {
 		return
 	}
 	res.WriteHeader(http.StatusOK)
+}
+
+func (ListingsHandler) handleOptionsId(res http.ResponseWriter) {
+	res.Header().Set("Allow", "GET, POST, PUT, DELETE")
+	if os.Getenv("GO_ENV") != "PROD" {
+		res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+		res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
+	}
+	res.WriteHeader(http.StatusNoContent)
+
 }
