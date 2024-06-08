@@ -158,11 +158,10 @@ func (h *ListingsHandler) handleDelete(id int, res http.ResponseWriter) {
 }
 
 func (ListingsHandler) handleOptionsId(res http.ResponseWriter) {
-	res.Header().Set("Allow", "GET, POST, PUT, DELETE")
+	res.Header().Set("Allow", "GET, PUT, DELETE")
 	if os.Getenv("GO_ENV") != "PROD" {
-		res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+		res.Header().Set("Access-Control-Allow-Methods", "GET, PUT, DELETE")
 		res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
 	}
 	res.WriteHeader(http.StatusNoContent)
-
 }
